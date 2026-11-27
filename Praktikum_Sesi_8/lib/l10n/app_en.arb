@@ -1,0 +1,147 @@
+{
+  "appTitle": "Campus Portal",
+  "detailTitle": "User Profile",
+  "email": "Email",
+  "city": "City",
+  "language": "Language",
+  "errorMessage": "Failed to load data",
+  "retry": "Retry",
+  "noData": "No user records found",
+  "usersTab": "Users",
+  "adminsTab": "Admins",
+  "apiLabTab": "API Lab",
+  "adminDetailTitle": "Admin Profile",
+  "department": "Department",
+  "name": "Full Name",
+  "idLabel": "ID",
+  "noAdminData": "No admin records found",
+  "deleteAdmin": "Remove Admin",
+  "deleteUser": "Remove User",
+  "confirmDeleteAdminTitle": "Remove Admin?",
+  "confirmDeleteAdminMessage": "Are you sure you want to permanently remove admin #{id}?",
+  "@confirmDeleteAdminMessage": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "confirmDeleteUserTitle": "Remove User?",
+  "confirmDeleteUserMessage": "Are you sure you want to permanently remove user #{id}?",
+  "@confirmDeleteUserMessage": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "adminDeletedSuccess": "Admin #{id} has been removed",
+  "@adminDeletedSuccess": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "adminDeletedFailed": "Admin #{id} was not found",
+  "@adminDeletedFailed": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "userDeletedSuccess": "User #{id} has been removed",
+  "@userDeletedSuccess": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "userDeletedFailed": "User #{id} was not found",
+  "@userDeletedFailed": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "userCreatedSuccess": "User #{id} created successfully",
+  "@userCreatedSuccess": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "userUpdatedSuccess": "User #{id} updated successfully",
+  "@userUpdatedSuccess": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "userPatchedSuccess": "User name updated with '- Flutter Developer'",
+  "cancel": "Cancel",
+  "delete": "Remove",
+  "close": "Close",
+  "save": "Save",
+  "reset": "Reset",
+  "resetDataTitle": "Reset Local Data?",
+  "resetDataMessage": "Restore all User (1104) and Admin (2104) records to initial defaults?",
+  "resetDataSuccess": "Local JSON data has been reset",
+  "jsonStorageTitle": "Local JSON Storage",
+  "jsonStorageInfo": "Records are persisted locally in these JSON files:",
+  "jsonStorageDesc": "All POST, PUT, PATCH, and DELETE actions sync directly to local storage.",
+  "jsonStorageMenu": "Storage Info",
+  "resetDataMenu": "Reset Data",
+  "searchUsersHint": "Search user by name, email, or ID...",
+  "searchAdminsHint": "Search admin by name, department, or ID...",
+  "totalRecords": "{count} records",
+  "@totalRecords": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "inspectId": "Inspect #{id}",
+  "@inspectId": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "addNewUser": "New User",
+  "addUserTitle": "Create User (POST)",
+  "editUserTitle": "Update User (PUT)",
+  "putActionShort": "PUT Edit",
+  "patchActionShort": "PATCH +Dev",
+  "dangerZone": "Danger Zone",
+  "dangerZoneAdminDesc": "Deleting this admin removes it from local JSON storage immediately.",
+  "openApiLab": "Test in API Lab",
+  "nameHint": "Enter full name",
+  "emailHint": "Enter email address",
+  "cityHint": "Enter city name",
+  "idHint": "e.g. 1104",
+  "apiConsoleTitle": "REST API Console",
+  "apiConsoleSubtitle": "Select entity & HTTP verb, then execute a request.",
+  "entityLabel": "Entity",
+  "methodLabel": "HTTP Verb",
+  "executeRequest": "Execute Request",
+  "executingRequest": "Executing...",
+  "responseOutput": "JSON Output",
+  "appendFlutterDevLabel": "Auto-append '- Flutter Developer'",
+  "enterValidId": "Enter a valid numeric ID",
+  "nameRequired": "Name is required",
+  "emailRequired": "Email is required",
+  "methodInfoGetAll": "GET All: Fetches the full list of records.",
+  "methodInfoGetById": "GET By ID: Fetches a single record by ID.",
+  "methodInfoPost": "POST: Creates a new User record (default ID: 1104).",
+  "methodInfoPut": "PUT: Replaces name and email of an existing User.",
+  "methodInfoPatch": "PATCH: Appends '- Flutter Developer' to the User name.",
+  "methodInfoDelete": "DELETE: Removes a record permanently by ID."
+}

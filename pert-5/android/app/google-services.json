@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "997540250772",
+    "project_id": "praktikumpemob-94646",
+    "storage_bucket": "praktikumpemob-94646.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997540250772:android:49ecd5f1c90c745f6f2081",
+        "android_client_info": {
+          "package_name": "com.example.pertemuan2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_t5A2-PBwJnvB98AwdYmKGfKwDbGg-EQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
