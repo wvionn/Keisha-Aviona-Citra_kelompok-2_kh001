@@ -6,40 +6,39 @@ import 'l10n/app_localizations.dart';
 import 'models/admin.dart';
 import 'models/user_model.dart';
 import 'screens/admin_detail_screen.dart';
-import 'screens/api_console_view.dart';
+import 'screens/api_tester_screen.dart';
 import 'screens/user_detail_screen.dart';
 import 'services/admin_service.dart';
 import 'services/api_service.dart';
 
 void main() {
-  runApp(const CampusPortalApp());
+  runApp(const MyApp());
 }
 
-class CampusPortalApp extends StatefulWidget {
-  const CampusPortalApp({super.key});
+// ==========================================
+// MAIN APP
+// ==========================================
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
   @override
-  State<CampusPortalApp> createState() => _CampusPortalAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
-class _CampusPortalAppState extends State<CampusPortalApp> {
-  Locale _locale = const Locale('id');
-
-  void _toggleLocale() {
-    setState(() {
-      _locale = _locale.languageCode == 'id'
-          ? const Locale('en')
-          : const Locale('id');
-    });
-  }
+class _MyAppState extends State<MyApp> {
+  Locale locale = const Locale('id');
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Campus Portal - ${NimConstants.nim}',
-      locale: _locale,
-      supportedLocales: const [Locale('id'), Locale('en')],
+      title: 'Praktikum Sesi 8 - NIM ${NimConstants.nim}',
+      locale: locale,
+      supportedLocales: const [
+        Locale('id'),
+        Locale('en'),
+      ],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -47,65 +46,55 @@ class _CampusPortalAppState extends State<CampusPortalApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4F46E5),
-          brightness: Brightness.light,
+          seedColor: Colors.blue,
         ),
-        scaffoldBackgroundColor: const Color(0xFFF8F9FC),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Color(0xFF0F172A),
-          elevation: 0,
-          scrolledUnderElevation: 1,
-        ),
+        useMaterial3: true,
       ),
-      home: PortalHomeScreen(
-        currentLanguageCode: _locale.languageCode,
-        onToggleLanguage: _toggleLocale,
+      home: HomeScreen(
+        onLanguageChanged: (value) {
+          setState(() {
+            locale = Locale(value);
+          });
+        },
       ),
     );
   }
 }
 
-class PortalHomeScreen extends StatefulWidget {
-  final String currentLanguageCode;
-  final VoidCallback onToggleLanguage;
+// ==========================================
+// HOME SCREEN - USER & ADMIN DIRECTORY
+// ==========================================
 
-  const PortalHomeScreen({
+class HomeScreen extends StatefulWidget {
+  final ValueChanged<String> onLanguageChanged;
+
+  const HomeScreen({
     super.key,
-    required this.currentLanguageCode,
-    required this.onToggleLanguage,
+    required this.onLanguageChanged,
   });
 
   @override
-  State<PortalHomeScreen> createState() => _PortalHomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _PortalHomeScreenState extends State<PortalHomeScreen> {
-  static const Color _indigo = Color(0xFF4F46E5);
-  static const Color _amber = Color(0xFFD97706);
-
-  int _navIndex = 0;
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
   late Future<List<User>> _futureUsers;
   late Future<List<Admin>> _futureAdmins;
-
-  final _userSearchCtrl = TextEditingController();
-  final _adminSearchCtrl = TextEditingController();
-  String _userQuery = '';
-  String _adminQuery = '';
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     _futureUsers = ApiService.getUsers();
     _futureAdmins = AdminService.getAdmins();
   }
 
   @override
   void dispose() {
-    _userSearchCtrl.dispose();
-    _adminSearchCtrl.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -128,12 +117,12 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
     });
   }
 
-  Future<void> _showStorageDialog() async {
+  Future<void> _showJsonStorageDialog() async {
     final l10n = AppLocalizations.of(context)!;
     final userPath = await ApiService.getJsonFilePath();
     final adminPath = await AdminService.getJsonFilePath();
-    if (!mounted) return;
 
+    if (!mounted) return;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -144,30 +133,33 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
           children: [
             Text(
               l10n.jsonStorageInfo,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
-            const Text('Users JSON:', style: TextStyle(fontSize: 12)),
+            const SizedBox(height: 8),
+            const Text('Users:', style: TextStyle(fontSize: 12)),
             SelectableText(
               userPath,
               style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 11,
-                color: _indigo,
+                color: Colors.blueGrey,
               ),
             ),
             const SizedBox(height: 8),
-            const Text('Admins JSON:', style: TextStyle(fontSize: 12)),
+            const Text('Admins:', style: TextStyle(fontSize: 12)),
             SelectableText(
               adminPath,
               style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 11,
-                color: _amber,
+                color: Colors.teal,
               ),
             ),
-            const SizedBox(height: 10),
-            Text(l10n.jsonStorageDesc, style: const TextStyle(fontSize: 12)),
+            const SizedBox(height: 12),
+            Text(
+              l10n.jsonStorageDesc,
+              style: const TextStyle(fontSize: 12),
+            ),
           ],
         ),
         actions: [
@@ -180,7 +172,7 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
     );
   }
 
-  Future<void> _confirmReset() async {
+  Future<void> _confirmResetData() async {
     final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
@@ -192,9 +184,10 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(l10n.cancel),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFFDC2626),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(l10n.reset),
@@ -208,148 +201,109 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
       await AdminService.resetToDefault();
       _refreshAll();
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.resetDataSuccess)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.resetDataSuccess)),
+        );
       }
     }
   }
 
-  Future<void> _openCreateUserSheet() async {
+  Future<void> _showPostUserDialog() async {
     final l10n = AppLocalizations.of(context)!;
-    final idCtrl = TextEditingController(text: NimConstants.userId.toString());
-    final nameCtrl = TextEditingController(
-      text: 'Mahasiswa ${NimConstants.nim}',
-    );
-    final emailCtrl = TextEditingController(
-      text: 'user.${NimConstants.userId}@kampus.ac.id',
-    );
-    final cityCtrl = TextEditingController(text: 'Jakarta');
+    final idController =
+        TextEditingController(text: NimConstants.userId.toString());
+    final nameController =
+        TextEditingController(text: 'Mahasiswa ${NimConstants.nim}');
+    final emailController =
+        TextEditingController(text: 'user.${NimConstants.userId}@kampus.ac.id');
+    final cityController = TextEditingController(text: 'Jakarta');
 
-    final createdId = await showModalBottomSheet<int>(
+    final createdId = await showDialog<int>(
       context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          20,
-          16,
-          20,
-          MediaQuery.of(ctx).viewInsets.bottom + 24,
-        ),
-        child: SingleChildScrollView(
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.addUserTitle),
+        content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFCBD5E1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                l10n.addUserTitle,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 14),
               TextField(
-                controller: idCtrl,
+                controller: idController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: '${l10n.usersTab} ${l10n.idLabel}',
-                  prefixIcon: const Icon(Icons.tag),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.numbers),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
-                controller: nameCtrl,
+                controller: nameController,
                 decoration: InputDecoration(
                   labelText: l10n.name,
                   hintText: l10n.nameHint,
-                  prefixIcon: const Icon(Icons.person_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.person),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
-                controller: emailCtrl,
+                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: l10n.email,
                   hintText: l10n.emailHint,
-                  prefixIcon: const Icon(Icons.alternate_email),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.email),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
-                controller: cityCtrl,
+                controller: cityController,
                 decoration: InputDecoration(
                   labelText: l10n.city,
                   hintText: l10n.cityHint,
-                  prefixIcon: const Icon(Icons.location_on_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.location_city),
                 ),
-              ),
-              const SizedBox(height: 16),
-              FilledButton.icon(
-                style: FilledButton.styleFrom(
-                  backgroundColor: _indigo,
-                  minimumSize: const Size.fromHeight(48),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () async {
-                  final parsedId =
-                      int.tryParse(idCtrl.text.trim()) ?? NimConstants.userId;
-                  if (nameCtrl.text.trim().isEmpty ||
-                      emailCtrl.text.trim().isEmpty) {
-                    return;
-                  }
-                  final created = await ApiService.createUser(
-                    nameCtrl.text.trim(),
-                    emailCtrl.text.trim(),
-                    id: parsedId,
-                    city: cityCtrl.text.trim().isEmpty
-                        ? 'Jakarta'
-                        : cityCtrl.text.trim(),
-                  );
-                  if (ctx.mounted) Navigator.pop(ctx, created.id);
-                },
-                icon: const Icon(Icons.add_rounded),
-                label: Text(l10n.save),
               ),
             ],
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final parsedId =
+                  int.tryParse(idController.text.trim()) ?? NimConstants.userId;
+              if (nameController.text.trim().isEmpty ||
+                  emailController.text.trim().isEmpty) {
+                return;
+              }
+              final created = await ApiService.createUser(
+                nameController.text.trim(),
+                emailController.text.trim(),
+                id: parsedId,
+                city: cityController.text.trim().isEmpty
+                    ? 'Jakarta'
+                    : cityController.text.trim(),
+              );
+              if (ctx.mounted) {
+                Navigator.pop(ctx, created.id);
+              }
+            },
+            child: Text(l10n.save),
+          ),
+        ],
       ),
     );
 
-    idCtrl.dispose();
-    nameCtrl.dispose();
-    emailCtrl.dispose();
-    cityCtrl.dispose();
+    idController.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    cityController.dispose();
 
     if (createdId != null && mounted) {
       _refreshUsers();
@@ -361,7 +315,7 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
 
   Future<void> _confirmDeleteAdmin(int adminId) async {
     final l10n = AppLocalizations.of(context)!;
-    final ok = await showDialog<bool>(
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.confirmDeleteAdminTitle),
@@ -371,9 +325,10 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(l10n.cancel),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFFDC2626),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(l10n.delete),
@@ -382,30 +337,20 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
       ),
     );
 
-    if (ok != true) return;
-    final deleted = await AdminService.deleteAdmin(adminId);
+    if (confirmed != true) return;
+
+    final success = await AdminService.deleteAdmin(adminId);
     if (!mounted) return;
     _refreshAdmins();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          deleted
+          success
               ? l10n.adminDeletedSuccess(adminId)
               : l10n.adminDeletedFailed(adminId),
         ),
       ),
     );
-  }
-
-  String _pageTitle(AppLocalizations l10n) {
-    switch (_navIndex) {
-      case 0:
-        return l10n.appTitle;
-      case 1:
-        return '${l10n.adminsTab} • ${l10n.appTitle}';
-      default:
-        return l10n.apiConsoleTitle;
-    }
   }
 
   @override
@@ -414,600 +359,406 @@ class _PortalHomeScreenState extends State<PortalHomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _pageTitle(l10n),
-          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 19),
-        ),
+        title: Text(l10n.appTitle),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         actions: [
-          // ONE-TAP LANGUAGE TOGGLE PILL
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: ActionChip(
-              avatar: const Icon(Icons.translate_rounded, size: 16),
-              label: Text(
-                widget.currentLanguageCode.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12,
-                ),
-              ),
-              side: const BorderSide(color: Color(0xFFE2E8F0)),
-              backgroundColor: const Color(0xFFF1F5F9),
-              onPressed: widget.onToggleLanguage,
-            ),
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: l10n.jsonStorageTooltip,
+            onPressed: _showJsonStorageDialog,
+          ),
+          IconButton(
+            icon: const Icon(Icons.restore),
+            tooltip: l10n.resetDataTooltip,
+            onPressed: _confirmResetData,
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert_rounded),
-            onSelected: (action) {
-              if (action == 'storage') {
-                _showStorageDialog();
-              } else if (action == 'reset') {
-                _confirmReset();
-              }
-            },
-            itemBuilder: (ctx) => [
+            icon: const Icon(Icons.language),
+            tooltip: l10n.language,
+            onSelected: widget.onLanguageChanged,
+            itemBuilder: (context) => const [
               PopupMenuItem(
-                value: 'storage',
-                child: Row(
-                  children: [
-                    const Icon(Icons.folder_outlined, size: 18),
-                    const SizedBox(width: 10),
-                    Text(l10n.jsonStorageMenu),
-                  ],
-                ),
+                value: 'id',
+                child: Text('Bahasa Indonesia'),
               ),
               PopupMenuItem(
-                value: 'reset',
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.restart_alt_rounded,
-                      size: 18,
-                      color: Color(0xFFDC2626),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      l10n.resetDataMenu,
-                      style: const TextStyle(color: Color(0xFFDC2626)),
-                    ),
-                  ],
-                ),
+                value: 'en',
+                child: Text('English'),
               ),
             ],
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Colors.white,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          tabs: [
+            Tab(
+              icon: const Icon(Icons.people),
+              text: '${l10n.usersTab} (${NimConstants.userId})',
+            ),
+            Tab(
+              icon: const Icon(Icons.admin_panel_settings),
+              text: '${l10n.adminsTab} (${NimConstants.adminId})',
+            ),
+          ],
+        ),
       ),
-      floatingActionButton: _navIndex == 0
-          ? FloatingActionButton(
-              onPressed: _openCreateUserSheet,
-              backgroundColor: _indigo,
-              foregroundColor: Colors.white,
-              tooltip: l10n.addNewUser,
-              child: const Icon(Icons.person_add_alt_1_rounded),
-            )
-          : null,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _navIndex,
-        backgroundColor: Colors.white,
-        indicatorColor: _navIndex == 1
-            ? _amber.withValues(alpha: 0.18)
-            : _indigo.withValues(alpha: 0.14),
-        onDestinationSelected: (idx) {
-          setState(() => _navIndex = idx);
-          if (idx == 0) _refreshUsers();
-          if (idx == 1) _refreshAdmins();
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          final isAdminTab = _tabController.index == 1;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ApiTesterScreen(
+                initialResource:
+                    isAdminTab ? ApiResource.admin : ApiResource.user,
+                initialId:
+                    isAdminTab ? NimConstants.adminId : NimConstants.userId,
+              ),
+            ),
+          ).then((_) => _refreshAll());
         },
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.group_outlined),
-            selectedIcon: const Icon(Icons.group_rounded, color: _indigo),
-            label: l10n.usersTab,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.shield_outlined),
-            selectedIcon: const Icon(Icons.shield_rounded, color: _amber),
-            label: l10n.adminsTab,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.terminal_outlined),
-            selectedIcon: const Icon(Icons.terminal_rounded, color: _indigo),
-            label: l10n.apiLabTab,
-          ),
-        ],
+        icon: const Icon(Icons.api),
+        label: Text(l10n.testApi),
       ),
-      body: IndexedStack(
-        index: _navIndex,
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          _buildUsersView(l10n),
-          _buildAdminsView(l10n),
-          ApiConsoleView(
-            initialEntity: ConsoleEntity.user,
-            initialId: NimConstants.userId,
-            onDataChanged: _refreshAll,
-          ),
+          _buildUsersTab(l10n),
+          _buildAdminsTab(l10n),
         ],
       ),
     );
   }
 
-  Widget _buildUsersView(AppLocalizations l10n) {
-    return FutureBuilder<List<User>>(
-      future: _futureUsers,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return _ErrorState(
-            message: l10n.errorMessage,
-            retryLabel: l10n.retry,
-            onRetry: _refreshUsers,
-          );
-        }
-
-        final allUsers = snapshot.data ?? [];
-        final q = _userQuery.toLowerCase();
-        final filtered = q.isEmpty
-            ? allUsers
-            : allUsers.where((u) {
-                return u.name.toLowerCase().contains(q) ||
-                    u.email.toLowerCase().contains(q) ||
-                    u.id.toString().contains(q);
-              }).toList();
-
-        return Column(
-          children: [
-            // SEARCH BAR + QUICK INSPECT HEADER
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _userSearchCtrl,
-                    onChanged: (v) => setState(() => _userQuery = v.trim()),
-                    decoration: InputDecoration(
-                      hintText: l10n.searchUsersHint,
-                      hintStyle: const TextStyle(fontSize: 13.5),
-                      prefixIcon: const Icon(Icons.search_rounded),
-                      suffixIcon: _userQuery.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.close_rounded, size: 18),
-                              onPressed: () {
-                                _userSearchCtrl.clear();
-                                setState(() => _userQuery = '');
-                              },
-                            )
-                          : null,
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(28),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+  Widget _buildUsersTab(AppLocalizations l10n) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const UserDetailScreen(
+                          userId: NimConstants.userId,
+                        ),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(28),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                    ),
+                    ).then((_) => _refreshUsers());
+                  },
+                  icon: const Icon(Icons.person_search, size: 18),
+                  label: Text(l10n.quickGetUser(NimConstants.userId)),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: _showPostUserDialog,
+                  icon: const Icon(Icons.person_add, size: 18),
+                  label: Text(l10n.quickPostUser(NimConstants.userId)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
                   ),
-                  const SizedBox(height: 10),
-                  Row(
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: FutureBuilder<List<User>>(
+            future: _futureUsers,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _indigo.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          l10n.totalRecords(filtered.length),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: _indigo,
+                      const Icon(Icons.error_outline,
+                          color: Colors.red, size: 50),
+                      const SizedBox(height: 12),
+                      Text(l10n.errorMessage),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: _refreshUsers,
+                        child: Text(l10n.retry),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              final users = snapshot.data ?? [];
+              if (users.isEmpty) {
+                return Center(child: Text(l10n.noData));
+              }
+
+              return RefreshIndicator(
+                onRefresh: () async => _refreshUsers(),
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    final user = users[index];
+                    final isNimUser = user.id == NimConstants.userId;
+
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      color: isNimUser
+                          ? Colors.blue.withValues(alpha: 0.08)
+                          : null,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: isNimUser
+                              ? Colors.blue
+                              : Colors.blue.shade100,
+                          child: Text(
+                            user.name.isNotEmpty
+                                ? user.name[0].toUpperCase()
+                                : 'U',
+                            style: TextStyle(
+                              color: isNimUser ? Colors.white : Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      const Spacer(),
-                      FilledButton.tonalIcon(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: _indigo.withValues(alpha: 0.12),
-                          foregroundColor: _indigo,
-                          visualDensity: VisualDensity.compact,
+                        title: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                user.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isNimUser
+                                    ? Colors.blue
+                                    : Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '#${user.id}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: isNimUser
+                                      ? Colors.white
+                                      : Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        onPressed: () {
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(user.email),
+                            if (user.city.isNotEmpty)
+                              Text(
+                                '${l10n.city}: ${user.city}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blueGrey,
+                                ),
+                              ),
+                          ],
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const UserDetailScreen(
-                                userId: NimConstants.userId,
-                              ),
+                              builder: (_) =>
+                                  UserDetailScreen(userId: user.id),
                             ),
                           ).then((_) => _refreshUsers());
                         },
-                        icon: const Icon(Icons.manage_search_rounded, size: 17),
-                        label: Text(l10n.inspectId(NimConstants.userId)),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            Expanded(
-              child: filtered.isEmpty
-                  ? Center(child: Text(l10n.noData))
-                  : RefreshIndicator(
-                      onRefresh: () async => _refreshUsers(),
-                      child: ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 88),
-                        itemCount: filtered.length,
-                        separatorBuilder: (_, _) => const SizedBox(height: 10),
-                        itemBuilder: (context, idx) {
-                          final user = filtered[idx];
-                          final isNim = user.id == NimConstants.userId;
-
-                          return _AccentRecordCard(
-                            id: user.id,
-                            title: user.name,
-                            subtitle: user.email,
-                            tagIcon: Icons.location_on_outlined,
-                            tagText: user.city.isEmpty ? '-' : user.city,
-                            accentColor: _indigo,
-                            highlighted: isNim,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      UserDetailScreen(userId: user.id),
-                                ),
-                              ).then((_) => _refreshUsers());
-                            },
-                          );
-                        },
-                      ),
-                    ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildAdminsView(AppLocalizations l10n) {
-    return FutureBuilder<List<Admin>>(
-      future: _futureAdmins,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return _ErrorState(
-            message: l10n.errorMessage,
-            retryLabel: l10n.retry,
-            onRetry: _refreshAdmins,
-          );
-        }
-
-        final allAdmins = snapshot.data ?? [];
-        final q = _adminQuery.toLowerCase();
-        final filtered = q.isEmpty
-            ? allAdmins
-            : allAdmins.where((a) {
-                return a.name.toLowerCase().contains(q) ||
-                    a.department.toLowerCase().contains(q) ||
-                    a.id.toString().contains(q);
-              }).toList();
-
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _adminSearchCtrl,
-                    onChanged: (v) => setState(() => _adminQuery = v.trim()),
-                    decoration: InputDecoration(
-                      hintText: l10n.searchAdminsHint,
-                      hintStyle: const TextStyle(fontSize: 13.5),
-                      prefixIcon: const Icon(Icons.search_rounded),
-                      suffixIcon: _adminQuery.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.close_rounded, size: 18),
-                              onPressed: () {
-                                _adminSearchCtrl.clear();
-                                setState(() => _adminQuery = '');
-                              },
-                            )
-                          : null,
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(28),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(28),
-                        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _amber.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          l10n.totalRecords(filtered.length),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: _amber,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      FilledButton.tonalIcon(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: _amber.withValues(alpha: 0.14),
-                          foregroundColor: _amber,
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AdminDetailScreen(
-                                adminId: NimConstants.adminId,
-                              ),
-                            ),
-                          ).then((_) => _refreshAdmins());
-                        },
-                        icon: const Icon(
-                          Icons.verified_user_outlined,
-                          size: 17,
-                        ),
-                        label: Text(l10n.inspectId(NimConstants.adminId)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            Expanded(
-              child: filtered.isEmpty
-                  ? Center(child: Text(l10n.noAdminData))
-                  : RefreshIndicator(
-                      onRefresh: () async => _refreshAdmins(),
-                      child: ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
-                        itemCount: filtered.length,
-                        separatorBuilder: (_, _) => const SizedBox(height: 10),
-                        itemBuilder: (context, idx) {
-                          final admin = filtered[idx];
-                          final isNim = admin.id == NimConstants.adminId;
-
-                          return _AccentRecordCard(
-                            id: admin.id,
-                            title: admin.name,
-                            subtitle: admin.email,
-                            tagIcon: Icons.apartment_rounded,
-                            tagText: admin.department,
-                            accentColor: _amber,
-                            highlighted: isNim,
-                            trailing: IconButton(
-                              icon: const Icon(
-                                Icons.delete_outline_rounded,
-                                color: Color(0xFFDC2626),
-                              ),
-                              tooltip: l10n.deleteAdmin,
-                              onPressed: () => _confirmDeleteAdmin(admin.id),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      AdminDetailScreen(adminId: admin.id),
-                                ),
-                              ).then((_) => _refreshAdmins());
-                            },
-                          );
-                        },
-                      ),
-                    ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _AccentRecordCard extends StatelessWidget {
-  final int id;
-  final String title;
-  final String subtitle;
-  final IconData tagIcon;
-  final String tagText;
-  final Color accentColor;
-  final bool highlighted;
-  final Widget? trailing;
-  final VoidCallback onTap;
-
-  const _AccentRecordCard({
-    required this.id,
-    required this.title,
-    required this.subtitle,
-    required this.tagIcon,
-    required this.tagText,
-    required this.accentColor,
-    required this.highlighted,
-    required this.onTap,
-    this.trailing,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: highlighted ? accentColor.withValues(alpha: 0.06) : Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: highlighted
-                  ? accentColor.withValues(alpha: 0.45)
-                  : const Color(0xFFE2E8F0),
-            ),
+                    );
+                  },
+                ),
+              );
+            },
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: IntrinsicHeight(
-              child: Row(
-                children: [
-                  // LEFT VERTICAL ACCENT BAR
-                  Container(
-                    width: 5,
-                    color: highlighted ? accentColor : const Color(0xFFE2E8F0),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 12,
-                      ),
-                      child: Row(
-                        children: [
-                          // ROUNDED-SQUARE ID BADGE
-                          Container(
-                            width: 50,
-                            height: 46,
-                            decoration: BoxDecoration(
-                              color: highlighted
-                                  ? accentColor
-                                  : accentColor.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              '#$id',
-                              style: TextStyle(
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w800,
-                                color: highlighted ? Colors.white : accentColor,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14.5,
-                                    color: Color(0xFF0F172A),
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  subtitle,
-                                  style: const TextStyle(
-                                    fontSize: 12.5,
-                                    color: Color(0xFF64748B),
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Icon(tagIcon, size: 13, color: accentColor),
-                                    const SizedBox(width: 4),
-                                    Expanded(
-                                      child: Text(
-                                        tagText,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 11.5,
-                                          fontWeight: FontWeight.w600,
-                                          color: accentColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          trailing ??
-                              const Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                size: 15,
-                                color: Color(0xFF94A3B8),
-                              ),
-                        ],
-                      ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAdminsTab(AppLocalizations l10n) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AdminDetailScreen(
+                      adminId: NimConstants.adminId,
                     ),
                   ),
-                ],
-              ),
+                ).then((_) => _refreshAdmins());
+              },
+              icon: const Icon(Icons.badge_outlined, size: 18),
+              label: Text(l10n.quickGetAdmin(NimConstants.adminId)),
             ),
           ),
         ),
-      ),
-    );
-  }
-}
+        Expanded(
+          child: FutureBuilder<List<Admin>>(
+            future: _futureAdmins,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-class _ErrorState extends StatelessWidget {
-  final String message;
-  final String retryLabel;
-  final VoidCallback onRetry;
+              if (snapshot.hasError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline,
+                          color: Colors.red, size: 50),
+                      const SizedBox(height: 12),
+                      Text(l10n.errorMessage),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: _refreshAdmins,
+                        child: Text(l10n.retry),
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-  const _ErrorState({
-    required this.message,
-    required this.retryLabel,
-    required this.onRetry,
-  });
+              final admins = snapshot.data ?? [];
+              if (admins.isEmpty) {
+                return Center(child: Text(l10n.noAdminData));
+              }
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.error_outline_rounded,
-            color: Color(0xFFDC2626),
-            size: 48,
+              return RefreshIndicator(
+                onRefresh: () async => _refreshAdmins(),
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 88),
+                  itemCount: admins.length,
+                  itemBuilder: (context, index) {
+                    final admin = admins[index];
+                    final isNimAdmin = admin.id == NimConstants.adminId;
+
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      color: isNimAdmin
+                          ? Colors.teal.withValues(alpha: 0.08)
+                          : null,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: isNimAdmin
+                              ? Colors.teal
+                              : Colors.teal.shade100,
+                          child: Text(
+                            admin.name.isNotEmpty
+                                ? admin.name[0].toUpperCase()
+                                : 'A',
+                            style: TextStyle(
+                              color: isNimAdmin ? Colors.white : Colors.teal,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        title: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                admin.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isNimAdmin
+                                    ? Colors.teal
+                                    : Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '#${admin.id}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: isNimAdmin
+                                      ? Colors.white
+                                      : Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(admin.email),
+                            Text(
+                              '${l10n.department}: ${admin.department}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.teal,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete_outline,
+                              color: Colors.red),
+                          tooltip: l10n.deleteAdmin,
+                          onPressed: () => _confirmDeleteAdmin(admin.id),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  AdminDetailScreen(adminId: admin.id),
+                            ),
+                          ).then((_) => _refreshAdmins());
+                        },
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
           ),
-          const SizedBox(height: 10),
-          Text(message),
-          const SizedBox(height: 10),
-          FilledButton(onPressed: onRetry, child: Text(retryLabel)),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

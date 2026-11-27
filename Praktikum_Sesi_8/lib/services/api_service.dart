@@ -9,26 +9,24 @@ import '../models/user_model.dart';
 class ApiService {
   static const String baseUrl = 'https://jsonplaceholder.typicode.com';
   static const String usersEndpoint = '$baseUrl/users';
-  static const String fileName = 'users_1104.json';
-  static const int nimUserId = NimConstants.userId; // 1104
+  static const String fileName = 'users.json';
+  static const int nimUserId = NimConstants.userId; // 1105
   static const String flutterDeveloperSuffix =
       NimConstants.flutterDeveloperSuffix;
 
+  // Mendapatkan path file users.json di internal storage perangkat
   static Future<File> getLocalFile() async {
     final directory = await getApplicationDocumentsDirectory();
     return File('${directory.path}/$fileName');
   }
 
+  // Mendapatkan path lengkap file JSON dalam bentuk String
   static Future<String> getJsonFilePath() async {
     final file = await getLocalFile();
     return file.path;
   }
 
-  static int _parseId(dynamic rawId) {
-    if (rawId is int) return rawId;
-    return int.tryParse(rawId.toString()) ?? 0;
-  }
-
+  // Inisialisasi file users.json jika belum ada
   static Future<File> _ensureFileInitialized() async {
     final file = await getLocalFile();
 
@@ -43,6 +41,7 @@ class ApiService {
           initialData = List<dynamic>.from(jsonDecode(response.body) as List);
         }
       } catch (_) {
+        // Fallback default data jika offline
         initialData = List<dynamic>.from(_defaultUsers);
       }
 
@@ -50,7 +49,10 @@ class ApiService {
         initialData = List<dynamic>.from(_defaultUsers);
       }
 
-      final hasNimUser = initialData.any((u) => _parseId(u['id']) == nimUserId);
+      // Pastikan User awal sesuai konstanta NIM (ID 1105) tersedia pada inisialisasi
+      final hasNimUser = initialData.any(
+        (u) => _parseId(u['id']) == nimUserId,
+      );
       if (!hasNimUser) {
         initialData.insert(0, Map<String, dynamic>.from(_defaultNimUser));
       }
@@ -63,12 +65,19 @@ class ApiService {
     return file;
   }
 
+  static int _parseId(dynamic rawId) {
+    if (rawId is int) return rawId;
+    return int.tryParse(rawId.toString()) ?? 0;
+  }
+
+  // Membaca semua data dari file users.json lokal
   static Future<List<dynamic>> _readJsonFile() async {
     final file = await _ensureFileInitialized();
     final contents = await file.readAsString();
     return List<dynamic>.from(jsonDecode(contents) as List);
   }
 
+  // Menyimpan seluruh list data kembali ke file users.json lokal
   static Future<void> _writeJsonFile(List<dynamic> users) async {
     final file = await getLocalFile();
     await file.writeAsString(
@@ -76,7 +85,7 @@ class ApiService {
     );
   }
 
-  // GET: Mengambil semua pengguna sebagai List<User>
+  // GET: Mengambil semua pengguna dari file JSON lokal sebagai List<User>
   static Future<List<User>> getUsers() async {
     await Future.delayed(const Duration(milliseconds: 200));
     final rawList = await _readJsonFile();
@@ -85,13 +94,15 @@ class ApiService {
         .toList();
   }
 
-  // GET: Mengambil detail pengguna berdasarkan ID (termasuk ID 1104)
+  // GET: Mengambil detail pengguna berdasarkan ID (termasuk ID 1105)
   static Future<User> getUser(int id) async {
     try {
       await http
           .get(Uri.parse('$usersEndpoint/$id'))
           .timeout(const Duration(milliseconds: 1500));
-    } catch (_) {}
+    } catch (_) {
+      // Tetap gunakan penyimpanan lokal jika offline atau mock tidak menyimpan ID 1105
+    }
 
     final users = await _readJsonFile();
     for (final element in users) {
@@ -104,7 +115,7 @@ class ApiService {
     throw Exception('Data pengguna dengan ID $id tidak ditemukan');
   }
 
-  // POST: Menambahkan pengguna baru dengan ID default 1104
+  // POST: Menambahkan pengguna baru dengan ID default 1105 dan menyimpan ke file JSON lokal
   static Future<User> createUser(
     String name,
     String email, {
@@ -115,7 +126,9 @@ class ApiService {
       'id': id,
       'name': name,
       'email': email,
-      'address': {'city': city},
+      'address': {
+        'city': city,
+      },
       'city': city,
     };
 
@@ -127,7 +140,9 @@ class ApiService {
             body: jsonEncode(newUserMap),
           )
           .timeout(const Duration(milliseconds: 1500));
-    } catch (_) {}
+    } catch (_) {
+      // Fallback ke penyimpanan JSON lokal saat offline
+    }
 
     final users = await _readJsonFile();
     final existingIndex = users.indexWhere(
@@ -144,7 +159,7 @@ class ApiService {
     return User.fromJson(newUserMap);
   }
 
-  // PUT: Memperbarui name dan email pengguna (termasuk ID 1104)
+  // PUT: Memperbarui name dan email pengguna (termasuk ID 1105)
   static Future<User> updateUser(
     int id,
     String name,
@@ -176,7 +191,9 @@ class ApiService {
             body: jsonEncode(existing),
           )
           .timeout(const Duration(milliseconds: 1500));
-    } catch (_) {}
+    } catch (_) {
+      // Fallback ke penyimpanan JSON lokal saat offline
+    }
 
     users[index] = existing;
     await _writeJsonFile(users);
@@ -184,7 +201,7 @@ class ApiService {
     return User.fromJson(existing);
   }
 
-  // PATCH: Memperbarui name pengguna dengan menambahkan '- Flutter Developer'
+  // PATCH: Memperbarui name pengguna dengan menambahkan teks '- Flutter Developer'
   static Future<User> patchUser(
     int id, {
     String? name,
@@ -219,7 +236,9 @@ class ApiService {
             body: jsonEncode({'name': updatedName}),
           )
           .timeout(const Duration(milliseconds: 1500));
-    } catch (_) {}
+    } catch (_) {
+      // Fallback ke penyimpanan JSON lokal saat offline
+    }
 
     users[index] = existing;
     await _writeJsonFile(users);
@@ -227,13 +246,15 @@ class ApiService {
     return User.fromJson(existing);
   }
 
-  // DELETE: Menghapus pengguna berdasarkan ID (termasuk ID 1104)
+  // DELETE: Menghapus pengguna berdasarkan ID (termasuk ID 1105)
   static Future<bool> deleteUser(int id) async {
     try {
       await http
           .delete(Uri.parse('$usersEndpoint/$id'))
           .timeout(const Duration(milliseconds: 1500));
-    } catch (_) {}
+    } catch (_) {
+      // Fallback ke penyimpanan JSON lokal saat offline
+    }
 
     final users = await _readJsonFile();
     final index = users.indexWhere(
@@ -250,6 +271,7 @@ class ApiService {
     return true;
   }
 
+  // Reset data file users.json kembali ke data awal
   static Future<void> resetToDefault() async {
     final file = await getLocalFile();
     if (await file.exists()) {
@@ -266,6 +288,7 @@ class ApiService {
     'city': 'Jakarta',
   };
 
+  // Default data fallback jika tidak ada koneksi internet saat inisialisasi awal
   static final List<Map<String, dynamic>> _defaultUsers = [
     {
       'id': 1,

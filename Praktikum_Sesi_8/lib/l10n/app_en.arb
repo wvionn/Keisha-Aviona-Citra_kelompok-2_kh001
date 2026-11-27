@@ -1,24 +1,23 @@
 {
-  "appTitle": "Campus Portal",
-  "detailTitle": "User Profile",
+  "appTitle": "Student Directory",
+  "detailTitle": "User Details",
   "email": "Email",
   "city": "City",
   "language": "Language",
-  "errorMessage": "Failed to load data",
-  "retry": "Retry",
-  "noData": "No user records found",
+  "errorMessage": "Failed to retrieve data",
+  "retry": "Try Again",
+  "noData": "No user data available",
   "usersTab": "Users",
   "adminsTab": "Admins",
-  "apiLabTab": "API Lab",
-  "adminDetailTitle": "Admin Profile",
+  "adminDetailTitle": "Admin Details",
   "department": "Department",
-  "name": "Full Name",
+  "name": "Name",
   "idLabel": "ID",
-  "noAdminData": "No admin records found",
-  "deleteAdmin": "Remove Admin",
-  "deleteUser": "Remove User",
-  "confirmDeleteAdminTitle": "Remove Admin?",
-  "confirmDeleteAdminMessage": "Are you sure you want to permanently remove admin #{id}?",
+  "noAdminData": "No admin data available",
+  "deleteAdmin": "Delete Admin",
+  "deleteUser": "Delete User",
+  "confirmDeleteAdminTitle": "Delete Admin?",
+  "confirmDeleteAdminMessage": "Are you sure you want to delete admin with ID {id}?",
   "@confirmDeleteAdminMessage": {
     "placeholders": {
       "id": {
@@ -26,8 +25,8 @@
       }
     }
   },
-  "confirmDeleteUserTitle": "Remove User?",
-  "confirmDeleteUserMessage": "Are you sure you want to permanently remove user #{id}?",
+  "confirmDeleteUserTitle": "Delete User?",
+  "confirmDeleteUserMessage": "Are you sure you want to delete user with ID {id}?",
   "@confirmDeleteUserMessage": {
     "placeholders": {
       "id": {
@@ -35,7 +34,7 @@
       }
     }
   },
-  "adminDeletedSuccess": "Admin #{id} has been removed",
+  "adminDeletedSuccess": "Admin with ID {id} deleted successfully",
   "@adminDeletedSuccess": {
     "placeholders": {
       "id": {
@@ -43,7 +42,7 @@
       }
     }
   },
-  "adminDeletedFailed": "Admin #{id} was not found",
+  "adminDeletedFailed": "Admin with ID {id} not found or failed to delete",
   "@adminDeletedFailed": {
     "placeholders": {
       "id": {
@@ -51,7 +50,7 @@
       }
     }
   },
-  "userDeletedSuccess": "User #{id} has been removed",
+  "userDeletedSuccess": "User with ID {id} deleted successfully",
   "@userDeletedSuccess": {
     "placeholders": {
       "id": {
@@ -59,7 +58,7 @@
       }
     }
   },
-  "userDeletedFailed": "User #{id} was not found",
+  "userDeletedFailed": "User with ID {id} not found or failed to delete",
   "@userDeletedFailed": {
     "placeholders": {
       "id": {
@@ -67,7 +66,7 @@
       }
     }
   },
-  "userCreatedSuccess": "User #{id} created successfully",
+  "userCreatedSuccess": "User with ID {id} created successfully",
   "@userCreatedSuccess": {
     "placeholders": {
       "id": {
@@ -75,7 +74,7 @@
       }
     }
   },
-  "userUpdatedSuccess": "User #{id} updated successfully",
+  "userUpdatedSuccess": "User with ID {id} updated successfully",
   "@userUpdatedSuccess": {
     "placeholders": {
       "id": {
@@ -83,65 +82,79 @@
       }
     }
   },
-  "userPatchedSuccess": "User name updated with '- Flutter Developer'",
+  "userPatchedSuccess": "User name patched with '- Flutter Developer'",
   "cancel": "Cancel",
-  "delete": "Remove",
+  "delete": "Delete",
   "close": "Close",
   "save": "Save",
   "reset": "Reset",
-  "resetDataTitle": "Reset Local Data?",
-  "resetDataMessage": "Restore all User (1104) and Admin (2104) records to initial defaults?",
-  "resetDataSuccess": "Local JSON data has been reset",
-  "jsonStorageTitle": "Local JSON Storage",
-  "jsonStorageInfo": "Records are persisted locally in these JSON files:",
-  "jsonStorageDesc": "All POST, PUT, PATCH, and DELETE actions sync directly to local storage.",
-  "jsonStorageMenu": "Storage Info",
-  "resetDataMenu": "Reset Data",
-  "searchUsersHint": "Search user by name, email, or ID...",
-  "searchAdminsHint": "Search admin by name, department, or ID...",
-  "totalRecords": "{count} records",
-  "@totalRecords": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "inspectId": "Inspect #{id}",
-  "@inspectId": {
+  "resetDataTitle": "Reset JSON Data?",
+  "resetDataMessage": "Are you sure you want to restore User and Admin data to the initial state?",
+  "resetDataSuccess": "User and Admin JSON data restored to default",
+  "jsonStorageTitle": "JSON File Storage",
+  "jsonStorageInfo": "Data is stored permanently in local JSON files:",
+  "jsonStorageDesc": "Every POST, PUT, PATCH, and DELETE operation updates these local JSON files directly.",
+  "jsonStorageTooltip": "JSON File Locations",
+  "resetDataTooltip": "Reset JSON Data to Default",
+  "testApi": "Test API",
+  "apiTesterTitle": "API Method Tester",
+  "nimBannerText": "NIM: 20240801105  •  User ID: 1105  •  Admin ID: 2105",
+  "quickGetUser": "GET User {id}",
+  "@quickGetUser": {
     "placeholders": {
       "id": {
         "type": "int"
       }
     }
   },
-  "addNewUser": "New User",
-  "addUserTitle": "Create User (POST)",
+  "quickPostUser": "POST User {id}",
+  "@quickPostUser": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "quickGetAdmin": "GET Admin {id}",
+  "@quickGetAdmin": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "quickDeleteAdmin": "DELETE Admin {id}",
+  "@quickDeleteAdmin": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "putUpdateAction": "PUT (Edit Name & Email)",
+  "patchFlutterDevAction": "PATCH (+ Flutter Developer)",
+  "openApiTester": "Open in API Tester",
+  "addUserTitle": "Add New User (POST)",
   "editUserTitle": "Update User (PUT)",
-  "putActionShort": "PUT Edit",
-  "patchActionShort": "PATCH +Dev",
-  "dangerZone": "Danger Zone",
-  "dangerZoneAdminDesc": "Deleting this admin removes it from local JSON storage immediately.",
-  "openApiLab": "Test in API Lab",
-  "nameHint": "Enter full name",
-  "emailHint": "Enter email address",
-  "cityHint": "Enter city name",
-  "idHint": "e.g. 1104",
-  "apiConsoleTitle": "REST API Console",
-  "apiConsoleSubtitle": "Select entity & HTTP verb, then execute a request.",
-  "entityLabel": "Entity",
-  "methodLabel": "HTTP Verb",
-  "executeRequest": "Execute Request",
-  "executingRequest": "Executing...",
-  "responseOutput": "JSON Output",
-  "appendFlutterDevLabel": "Auto-append '- Flutter Developer'",
-  "enterValidId": "Enter a valid numeric ID",
-  "nameRequired": "Name is required",
-  "emailRequired": "Email is required",
-  "methodInfoGetAll": "GET All: Fetches the full list of records.",
-  "methodInfoGetById": "GET By ID: Fetches a single record by ID.",
-  "methodInfoPost": "POST: Creates a new User record (default ID: 1104).",
-  "methodInfoPut": "PUT: Replaces name and email of an existing User.",
-  "methodInfoPatch": "PATCH: Appends '- Flutter Developer' to the User name.",
-  "methodInfoDelete": "DELETE: Removes a record permanently by ID."
+  "nameHint": "Enter user name",
+  "emailHint": "Enter user email",
+  "cityHint": "Enter city",
+  "idHint": "Example: 1105",
+  "requestConfiguration": "Request Configuration",
+  "selectMethodSubtitle": "Choose target resource, HTTP method, and enter request data.",
+  "targetResource": "Target Resource",
+  "httpMethod": "HTTP Method",
+  "sendRequest": "Send Request",
+  "sendingRequest": "Sending Request...",
+  "responseResult": "Response Result",
+  "appendFlutterDevLabel": "Append '- Flutter Developer' to name",
+  "enterValidId": "Please enter a valid numeric ID",
+  "nameRequired": "Name cannot be empty",
+  "emailRequired": "Email cannot be empty",
+  "methodInfoGetAll": "GET (All): Retrieves all records from the selected resource.",
+  "methodInfoGetById": "GET (By ID): Retrieves a single record matching the given ID.",
+  "methodInfoPost": "POST: Creates a new User record with the specified ID (default: 1105).",
+  "methodInfoPut": "PUT: Updates both name and email of the selected User.",
+  "methodInfoPatch": "PATCH: Partially updates the User name by appending '- Flutter Developer'.",
+  "methodInfoDelete": "DELETE: Removes the record matching the specified ID."
 }

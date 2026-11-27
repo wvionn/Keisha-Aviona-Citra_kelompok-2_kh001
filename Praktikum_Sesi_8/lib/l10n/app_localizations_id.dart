@@ -9,10 +9,10 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
-  String get appTitle => 'Portal Kampus';
+  String get appTitle => 'Direktori Mahasiswa';
 
   @override
-  String get detailTitle => 'Profil Pengguna';
+  String get detailTitle => 'Detail Pengguna';
 
   @override
   String get email => 'Email';
@@ -24,13 +24,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get language => 'Bahasa';
 
   @override
-  String get errorMessage => 'Gagal memuat data';
+  String get errorMessage => 'Gagal mengambil data';
 
   @override
-  String get retry => 'Muat Ulang';
+  String get retry => 'Coba Lagi';
 
   @override
-  String get noData => 'Belum ada data pengguna';
+  String get noData => 'Tidak ada data pengguna';
 
   @override
   String get usersTab => 'Pengguna';
@@ -39,22 +39,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get adminsTab => 'Admin';
 
   @override
-  String get apiLabTab => 'API Lab';
-
-  @override
-  String get adminDetailTitle => 'Profil Admin';
+  String get adminDetailTitle => 'Detail Admin';
 
   @override
   String get department => 'Departemen';
 
   @override
-  String get name => 'Nama Lengkap';
+  String get name => 'Nama';
 
   @override
   String get idLabel => 'ID';
 
   @override
-  String get noAdminData => 'Belum ada data admin';
+  String get noAdminData => 'Tidak ada data admin';
 
   @override
   String get deleteAdmin => 'Hapus Admin';
@@ -67,7 +64,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String confirmDeleteAdminMessage(int id) {
-    return 'Apakah Anda yakin ingin menghapus permanen admin #$id?';
+    return 'Apakah Anda yakin ingin menghapus admin dengan ID $id?';
   }
 
   @override
@@ -75,42 +72,42 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String confirmDeleteUserMessage(int id) {
-    return 'Apakah Anda yakin ingin menghapus permanen pengguna #$id?';
+    return 'Apakah Anda yakin ingin menghapus pengguna dengan ID $id?';
   }
 
   @override
   String adminDeletedSuccess(int id) {
-    return 'Admin #$id berhasil dihapus';
+    return 'Admin dengan ID $id berhasil dihapus';
   }
 
   @override
   String adminDeletedFailed(int id) {
-    return 'Admin #$id tidak ditemukan';
+    return 'Admin dengan ID $id tidak ditemukan atau gagal dihapus';
   }
 
   @override
   String userDeletedSuccess(int id) {
-    return 'Pengguna #$id berhasil dihapus';
+    return 'Pengguna dengan ID $id berhasil dihapus';
   }
 
   @override
   String userDeletedFailed(int id) {
-    return 'Pengguna #$id tidak ditemukan';
+    return 'Pengguna dengan ID $id tidak ditemukan atau gagal dihapus';
   }
 
   @override
   String userCreatedSuccess(int id) {
-    return 'Pengguna #$id berhasil ditambahkan';
+    return 'Pengguna dengan ID $id berhasil ditambahkan';
   }
 
   @override
   String userUpdatedSuccess(int id) {
-    return 'Pengguna #$id berhasil diperbarui';
+    return 'Pengguna dengan ID $id berhasil diperbarui';
   }
 
   @override
   String get userPatchedSuccess =>
-      'Nama pengguna diperbarui dengan \'- Flutter Developer\'';
+      'Nama pengguna berhasil diperbarui dengan \'- Flutter Developer\'';
 
   @override
   String get cancel => 'Batal';
@@ -128,111 +125,115 @@ class AppLocalizationsId extends AppLocalizations {
   String get reset => 'Reset';
 
   @override
-  String get resetDataTitle => 'Reset Data Lokal?';
+  String get resetDataTitle => 'Reset Data JSON?';
 
   @override
   String get resetDataMessage =>
-      'Kembalikan seluruh data Pengguna (1104) dan Admin (2104) ke data awal?';
+      'Apakah Anda yakin ingin mengembalikan data Pengguna dan Admin ke data awal?';
 
   @override
-  String get resetDataSuccess => 'Data JSON lokal berhasil di-reset';
+  String get resetDataSuccess =>
+      'Data JSON Pengguna dan Admin berhasil di-reset ke data awal';
 
   @override
-  String get jsonStorageTitle => 'Penyimpanan JSON Lokal';
+  String get jsonStorageTitle => 'Penyimpanan File JSON';
 
   @override
   String get jsonStorageInfo =>
-      'Data disimpan permanen pada file JSON berikut:';
+      'Data tersimpan secara permanen di file JSON lokal:';
 
   @override
   String get jsonStorageDesc =>
-      'Seluruh aksi POST, PUT, PATCH, dan DELETE langsung tersimpan ke penyimpanan lokal.';
+      'Setiap operasi Tambah (POST), Ubah (PUT/PATCH), dan Hapus (DELETE) langsung memperbarui file JSON ini.';
 
   @override
-  String get jsonStorageMenu => 'Info Penyimpanan';
+  String get jsonStorageTooltip => 'Lokasi File JSON';
 
   @override
-  String get resetDataMenu => 'Reset Data';
+  String get resetDataTooltip => 'Reset Data JSON ke Awal';
 
   @override
-  String get searchUsersHint =>
-      'Cari pengguna berdasarkan nama, email, atau ID...';
+  String get testApi => 'Uji API';
 
   @override
-  String get searchAdminsHint =>
-      'Cari admin berdasarkan nama, departemen, atau ID...';
+  String get apiTesterTitle => 'API Method Tester';
 
   @override
-  String totalRecords(int count) {
-    return '$count data';
+  String get nimBannerText =>
+      'NIM: 20240801105  •  ID User: 1105  •  ID Admin: 2105';
+
+  @override
+  String quickGetUser(int id) {
+    return 'GET User $id';
   }
 
   @override
-  String inspectId(int id) {
-    return 'Lihat #$id';
+  String quickPostUser(int id) {
+    return 'POST User $id';
   }
 
   @override
-  String get addNewUser => 'Tambah User';
+  String quickGetAdmin(int id) {
+    return 'GET Admin $id';
+  }
 
   @override
-  String get addUserTitle => 'Tambah Pengguna (POST)';
+  String quickDeleteAdmin(int id) {
+    return 'HAPUS Admin $id';
+  }
 
   @override
-  String get editUserTitle => 'Ubah Pengguna (PUT)';
+  String get putUpdateAction => 'PUT (Ubah Nama & Email)';
 
   @override
-  String get putActionShort => 'PUT Ubah';
+  String get patchFlutterDevAction => 'PATCH (+ Flutter Developer)';
 
   @override
-  String get patchActionShort => 'PATCH +Dev';
+  String get openApiTester => 'Buka di API Tester';
 
   @override
-  String get dangerZone => 'Zona Hapus';
+  String get addUserTitle => 'Tambah Pengguna Baru (POST)';
 
   @override
-  String get dangerZoneAdminDesc =>
-      'Menghapus admin ini akan langsung menghapusnya dari file JSON lokal.';
+  String get editUserTitle => 'Perbarui Pengguna (PUT)';
 
   @override
-  String get openApiLab => 'Uji di API Lab';
+  String get nameHint => 'Masukkan nama pengguna';
 
   @override
-  String get nameHint => 'Masukkan nama lengkap';
+  String get emailHint => 'Masukkan email pengguna';
 
   @override
-  String get emailHint => 'Masukkan alamat email';
+  String get cityHint => 'Masukkan kota';
 
   @override
-  String get cityHint => 'Masukkan nama kota';
+  String get idHint => 'Contoh: 1105';
 
   @override
-  String get idHint => 'Contoh: 1104';
+  String get requestConfiguration => 'Konfigurasi Request';
 
   @override
-  String get apiConsoleTitle => 'Konsol REST API';
+  String get selectMethodSubtitle =>
+      'Pilih target resource, HTTP method, dan masukkan data yang ingin dikirim.';
 
   @override
-  String get apiConsoleSubtitle =>
-      'Pilih entitas & metode HTTP, lalu jalankan request.';
+  String get targetResource => 'Target Resource';
 
   @override
-  String get entityLabel => 'Entitas';
+  String get httpMethod => 'HTTP Method';
 
   @override
-  String get methodLabel => 'Metode HTTP';
+  String get sendRequest => 'Kirim Request';
 
   @override
-  String get executeRequest => 'Jalankan Request';
+  String get sendingRequest => 'Mengirim Request...';
 
   @override
-  String get executingRequest => 'Memproses...';
+  String get responseResult => 'Hasil Response';
 
   @override
-  String get responseOutput => 'Output JSON';
-
-  @override
-  String get appendFlutterDevLabel => 'Otomatis tambah \'- Flutter Developer\'';
+  String get appendFlutterDevLabel =>
+      'Tambahkan \'- Flutter Developer\' pada nama';
 
   @override
   String get enterValidId => 'Masukkan ID angka yang valid';
@@ -244,25 +245,26 @@ class AppLocalizationsId extends AppLocalizations {
   String get emailRequired => 'Email tidak boleh kosong';
 
   @override
-  String get methodInfoGetAll => 'GET All: Mengambil seluruh daftar data.';
+  String get methodInfoGetAll =>
+      'GET (All): Mengambil seluruh data dari resource yang dipilih.';
 
   @override
   String get methodInfoGetById =>
-      'GET By ID: Mengambil satu data berdasarkan ID.';
+      'GET (By ID): Mengambil satu data berdasarkan ID yang dimasukkan.';
 
   @override
   String get methodInfoPost =>
-      'POST: Membuat data Pengguna baru (default ID: 1104).';
+      'POST: Menambahkan data User baru dengan ID yang ditentukan (default: 1105).';
 
   @override
   String get methodInfoPut =>
-      'PUT: Mengganti nama dan email Pengguna secara penuh.';
+      'PUT: Memperbarui nama dan email User secara menyeluruh.';
 
   @override
   String get methodInfoPatch =>
-      'PATCH: Menambahkan \'- Flutter Developer\' pada nama Pengguna.';
+      'PATCH: Memperbarui sebagian data (nama) dengan menambahkan \'- Flutter Developer\'.';
 
   @override
   String get methodInfoDelete =>
-      'DELETE: Menghapus data secara permanen berdasarkan ID.';
+      'DELETE: Menghapus data berdasarkan ID yang dimasukkan.';
 }

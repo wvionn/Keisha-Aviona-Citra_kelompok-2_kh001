@@ -9,10 +9,10 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Campus Portal';
+  String get appTitle => 'Student Directory';
 
   @override
-  String get detailTitle => 'User Profile';
+  String get detailTitle => 'User Details';
 
   @override
   String get email => 'Email';
@@ -24,13 +24,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
-  String get errorMessage => 'Failed to load data';
+  String get errorMessage => 'Failed to retrieve data';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Try Again';
 
   @override
-  String get noData => 'No user records found';
+  String get noData => 'No user data available';
 
   @override
   String get usersTab => 'Users';
@@ -39,84 +39,81 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminsTab => 'Admins';
 
   @override
-  String get apiLabTab => 'API Lab';
-
-  @override
-  String get adminDetailTitle => 'Admin Profile';
+  String get adminDetailTitle => 'Admin Details';
 
   @override
   String get department => 'Department';
 
   @override
-  String get name => 'Full Name';
+  String get name => 'Name';
 
   @override
   String get idLabel => 'ID';
 
   @override
-  String get noAdminData => 'No admin records found';
+  String get noAdminData => 'No admin data available';
 
   @override
-  String get deleteAdmin => 'Remove Admin';
+  String get deleteAdmin => 'Delete Admin';
 
   @override
-  String get deleteUser => 'Remove User';
+  String get deleteUser => 'Delete User';
 
   @override
-  String get confirmDeleteAdminTitle => 'Remove Admin?';
+  String get confirmDeleteAdminTitle => 'Delete Admin?';
 
   @override
   String confirmDeleteAdminMessage(int id) {
-    return 'Are you sure you want to permanently remove admin #$id?';
+    return 'Are you sure you want to delete admin with ID $id?';
   }
 
   @override
-  String get confirmDeleteUserTitle => 'Remove User?';
+  String get confirmDeleteUserTitle => 'Delete User?';
 
   @override
   String confirmDeleteUserMessage(int id) {
-    return 'Are you sure you want to permanently remove user #$id?';
+    return 'Are you sure you want to delete user with ID $id?';
   }
 
   @override
   String adminDeletedSuccess(int id) {
-    return 'Admin #$id has been removed';
+    return 'Admin with ID $id deleted successfully';
   }
 
   @override
   String adminDeletedFailed(int id) {
-    return 'Admin #$id was not found';
+    return 'Admin with ID $id not found or failed to delete';
   }
 
   @override
   String userDeletedSuccess(int id) {
-    return 'User #$id has been removed';
+    return 'User with ID $id deleted successfully';
   }
 
   @override
   String userDeletedFailed(int id) {
-    return 'User #$id was not found';
+    return 'User with ID $id not found or failed to delete';
   }
 
   @override
   String userCreatedSuccess(int id) {
-    return 'User #$id created successfully';
+    return 'User with ID $id created successfully';
   }
 
   @override
   String userUpdatedSuccess(int id) {
-    return 'User #$id updated successfully';
+    return 'User with ID $id updated successfully';
   }
 
   @override
   String get userPatchedSuccess =>
-      'User name updated with \'- Flutter Developer\'';
+      'User name patched with \'- Flutter Developer\'';
 
   @override
   String get cancel => 'Cancel';
 
   @override
-  String get delete => 'Remove';
+  String get delete => 'Delete';
 
   @override
   String get close => 'Close';
@@ -128,137 +125,144 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reset => 'Reset';
 
   @override
-  String get resetDataTitle => 'Reset Local Data?';
+  String get resetDataTitle => 'Reset JSON Data?';
 
   @override
   String get resetDataMessage =>
-      'Restore all User (1104) and Admin (2104) records to initial defaults?';
+      'Are you sure you want to restore User and Admin data to the initial state?';
 
   @override
-  String get resetDataSuccess => 'Local JSON data has been reset';
+  String get resetDataSuccess => 'User and Admin JSON data restored to default';
 
   @override
-  String get jsonStorageTitle => 'Local JSON Storage';
+  String get jsonStorageTitle => 'JSON File Storage';
 
   @override
   String get jsonStorageInfo =>
-      'Records are persisted locally in these JSON files:';
+      'Data is stored permanently in local JSON files:';
 
   @override
   String get jsonStorageDesc =>
-      'All POST, PUT, PATCH, and DELETE actions sync directly to local storage.';
+      'Every POST, PUT, PATCH, and DELETE operation updates these local JSON files directly.';
 
   @override
-  String get jsonStorageMenu => 'Storage Info';
+  String get jsonStorageTooltip => 'JSON File Locations';
 
   @override
-  String get resetDataMenu => 'Reset Data';
+  String get resetDataTooltip => 'Reset JSON Data to Default';
 
   @override
-  String get searchUsersHint => 'Search user by name, email, or ID...';
+  String get testApi => 'Test API';
 
   @override
-  String get searchAdminsHint => 'Search admin by name, department, or ID...';
+  String get apiTesterTitle => 'API Method Tester';
 
   @override
-  String totalRecords(int count) {
-    return '$count records';
+  String get nimBannerText =>
+      'NIM: 20240801105  •  User ID: 1105  •  Admin ID: 2105';
+
+  @override
+  String quickGetUser(int id) {
+    return 'GET User $id';
   }
 
   @override
-  String inspectId(int id) {
-    return 'Inspect #$id';
+  String quickPostUser(int id) {
+    return 'POST User $id';
   }
 
   @override
-  String get addNewUser => 'New User';
+  String quickGetAdmin(int id) {
+    return 'GET Admin $id';
+  }
 
   @override
-  String get addUserTitle => 'Create User (POST)';
+  String quickDeleteAdmin(int id) {
+    return 'DELETE Admin $id';
+  }
+
+  @override
+  String get putUpdateAction => 'PUT (Edit Name & Email)';
+
+  @override
+  String get patchFlutterDevAction => 'PATCH (+ Flutter Developer)';
+
+  @override
+  String get openApiTester => 'Open in API Tester';
+
+  @override
+  String get addUserTitle => 'Add New User (POST)';
 
   @override
   String get editUserTitle => 'Update User (PUT)';
 
   @override
-  String get putActionShort => 'PUT Edit';
+  String get nameHint => 'Enter user name';
 
   @override
-  String get patchActionShort => 'PATCH +Dev';
+  String get emailHint => 'Enter user email';
 
   @override
-  String get dangerZone => 'Danger Zone';
+  String get cityHint => 'Enter city';
 
   @override
-  String get dangerZoneAdminDesc =>
-      'Deleting this admin removes it from local JSON storage immediately.';
+  String get idHint => 'Example: 1105';
 
   @override
-  String get openApiLab => 'Test in API Lab';
+  String get requestConfiguration => 'Request Configuration';
 
   @override
-  String get nameHint => 'Enter full name';
+  String get selectMethodSubtitle =>
+      'Choose target resource, HTTP method, and enter request data.';
 
   @override
-  String get emailHint => 'Enter email address';
+  String get targetResource => 'Target Resource';
 
   @override
-  String get cityHint => 'Enter city name';
+  String get httpMethod => 'HTTP Method';
 
   @override
-  String get idHint => 'e.g. 1104';
+  String get sendRequest => 'Send Request';
 
   @override
-  String get apiConsoleTitle => 'REST API Console';
+  String get sendingRequest => 'Sending Request...';
 
   @override
-  String get apiConsoleSubtitle =>
-      'Select entity & HTTP verb, then execute a request.';
+  String get responseResult => 'Response Result';
 
   @override
-  String get entityLabel => 'Entity';
+  String get appendFlutterDevLabel => 'Append \'- Flutter Developer\' to name';
 
   @override
-  String get methodLabel => 'HTTP Verb';
+  String get enterValidId => 'Please enter a valid numeric ID';
 
   @override
-  String get executeRequest => 'Execute Request';
+  String get nameRequired => 'Name cannot be empty';
 
   @override
-  String get executingRequest => 'Executing...';
+  String get emailRequired => 'Email cannot be empty';
 
   @override
-  String get responseOutput => 'JSON Output';
+  String get methodInfoGetAll =>
+      'GET (All): Retrieves all records from the selected resource.';
 
   @override
-  String get appendFlutterDevLabel => 'Auto-append \'- Flutter Developer\'';
-
-  @override
-  String get enterValidId => 'Enter a valid numeric ID';
-
-  @override
-  String get nameRequired => 'Name is required';
-
-  @override
-  String get emailRequired => 'Email is required';
-
-  @override
-  String get methodInfoGetAll => 'GET All: Fetches the full list of records.';
-
-  @override
-  String get methodInfoGetById => 'GET By ID: Fetches a single record by ID.';
+  String get methodInfoGetById =>
+      'GET (By ID): Retrieves a single record matching the given ID.';
 
   @override
   String get methodInfoPost =>
-      'POST: Creates a new User record (default ID: 1104).';
+      'POST: Creates a new User record with the specified ID (default: 1105).';
 
   @override
   String get methodInfoPut =>
-      'PUT: Replaces name and email of an existing User.';
+      'PUT: Updates both name and email of the selected User.';
 
   @override
   String get methodInfoPatch =>
-      'PATCH: Appends \'- Flutter Developer\' to the User name.';
+      'PATCH: Partially updates the User name by appending \'- Flutter Developer\'.';
 
   @override
-  String get methodInfoDelete => 'DELETE: Removes a record permanently by ID.';
+  String get methodInfoDelete =>
+      'DELETE: Removes the record matching the specified ID.';
 }

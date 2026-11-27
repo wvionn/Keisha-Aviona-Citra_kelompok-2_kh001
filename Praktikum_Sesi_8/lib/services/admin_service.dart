@@ -8,16 +8,22 @@ import '../models/admin.dart';
 import 'api_service.dart';
 
 class AdminService {
+  // Menggunakan baseUrl yang konsisten dengan ApiService
   static const String baseUrl = ApiService.baseUrl;
-  static const String adminsEndpoint = '$baseUrl/users';
-  static const String fileName = 'admins_2104.json';
-  static const int nimAdminId = NimConstants.adminId; // 2104
 
+  // JSONPlaceholder tidak memiliki endpoint /admins sehingga memanfaatkan
+  // mock endpoint /users untuk sinkronisasi awal dan pemetaan department
+  static const String adminsEndpoint = '$baseUrl/users';
+  static const String fileName = 'admins.json';
+  static const int nimAdminId = NimConstants.adminId; // 2105
+
+  // Mendapatkan path file admins.json di internal storage perangkat
   static Future<File> getLocalFile() async {
     final directory = await getApplicationDocumentsDirectory();
     return File('${directory.path}/$fileName');
   }
 
+  // Mendapatkan path lengkap file JSON Admin dalam bentuk String
   static Future<String> getJsonFilePath() async {
     final file = await getLocalFile();
     return file.path;
@@ -28,6 +34,7 @@ class AdminService {
     return int.tryParse(rawId.toString()) ?? 0;
   }
 
+  // Inisialisasi file admins.json jika belum ada
   static Future<File> _ensureFileInitialized() async {
     final file = await getLocalFile();
 
@@ -61,13 +68,14 @@ class AdminService {
             initialAdmins.add({
               'id': 2001 + i,
               'name': item['name']?.toString() ?? 'Admin ${2001 + i}',
-              'email':
-                  item['email']?.toString() ?? 'admin${2001 + i}@kampus.ac.id',
+              'email': item['email']?.toString() ?? 'admin${2001 + i}@kampus.ac.id',
               'department': deptName,
             });
           }
         }
-      } catch (_) {}
+      } catch (_) {
+        // Fallback default data jika offline
+      }
 
       if (initialAdmins.length == 1) {
         initialAdmins.addAll(
@@ -105,13 +113,15 @@ class AdminService {
         .toList();
   }
 
-  // GET: Mengambil satu data Admin berdasarkan ID (uji ID 2104)
+  // GET: Mengambil satu data Admin berdasarkan ID (uji dengan ID 2105)
   static Future<Admin> getAdmin(int id) async {
     try {
       await http
           .get(Uri.parse('$adminsEndpoint/$id'))
           .timeout(const Duration(milliseconds: 1500));
-    } catch (_) {}
+    } catch (_) {
+      // Tetap gunakan penyimpanan lokal jika offline atau mock tidak menyimpan ID 2105
+    }
 
     final admins = await _readJsonFile();
     for (final element in admins) {
@@ -124,13 +134,15 @@ class AdminService {
     throw Exception('Data admin dengan ID $id tidak ditemukan');
   }
 
-  // DELETE: Menghapus data Admin berdasarkan ID (uji ID 2104)
+  // DELETE: Menghapus data Admin berdasarkan ID (uji dengan ID 2105)
   static Future<bool> deleteAdmin(int id) async {
     try {
       await http
           .delete(Uri.parse('$adminsEndpoint/$id'))
           .timeout(const Duration(milliseconds: 1500));
-    } catch (_) {}
+    } catch (_) {
+      // Fallback ke penyimpanan JSON lokal saat offline
+    }
 
     final admins = await _readJsonFile();
     final index = admins.indexWhere(
@@ -147,6 +159,7 @@ class AdminService {
     return true;
   }
 
+  // Reset data file admins.json kembali ke data awal (termasuk Admin ID 2105)
   static Future<void> resetToDefault() async {
     final file = await getLocalFile();
     if (await file.exists()) {
